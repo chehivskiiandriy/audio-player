@@ -34,9 +34,6 @@ class AudioPlayer extends Component {
       duration: audio.duration,
       loaded: true
     }))
-    if (this.state.isPlaying) {
-      audio.play()
-    }
   }
 
   checkIsTrackExist = () => {
@@ -47,18 +44,16 @@ class AudioPlayer extends Component {
       return true
     }
   }
-  handlePlay = audio => {
+  handlePlay = () => {
     if (!this.checkIsTrackExist()) {
       return
     }
 
     this.setState(() => ({ isPlaying: true }))
-    audio.play()
   }
 
-  handlePause = audio => {
+  handlePause = () => {
     this.setState(() => ({ isPlaying: false }))
-    audio.pause()
   }
 
   handlePreviousTrack = () => {
@@ -97,11 +92,15 @@ class AudioPlayer extends Component {
   }
 
   changeActiveTrack = activeTrack => {
-    this.setState((prevState) => ({ activeTrack, isPlaying: true, activePlaylist: [...prevState.playlist] }))
+    if (this.state.activeTrack && activeTrack.id === this.state.activeTrack.id) {
+      this.setState((prevState) => ({ isPlaying: !prevState.isPlaying, activePlaylist: [...prevState.playlist] }))
+    } else {
+      this.setState((prevState) => ({ activeTrack, isPlaying: true, activePlaylist: [...prevState.playlist] }))
+    }
   }
 
   render () {
-    const { loaded, duration, currentTime } = this.state
+    const { loaded, duration, currentTime, isPlaying } = this.state
     const progressWidth = loaded ? `${(currentTime / duration) * 100}%` : '0%'
 
     const sec = Math.floor(currentTime % 60)
@@ -123,7 +122,7 @@ class AudioPlayer extends Component {
         progressTime
       }}>
         <Wrapper>
-          <Player />
+          <Player isPlaying={isPlaying} />
           <Search />
           <TrackList />
         </Wrapper>

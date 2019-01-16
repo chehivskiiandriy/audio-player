@@ -7,7 +7,7 @@ export const TrackWrapper = styled.div`
   cursor: pointer;
   
   &:not(:last-child) {
-    border-bottom: 1px solid ${props => props.borderColor};
+    border-bottom: 1px solid ${props => props.theme.borderColor};
   }
 `
 

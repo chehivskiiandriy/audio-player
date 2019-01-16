@@ -15,6 +15,16 @@ class Player extends Component {
     this.updateVolume(this.state.volume)
   }
 
+  componentDidUpdate () {
+    if (this.props.isPlaying === this.audio.paused) {
+      if (this.props.isPlaying) {
+        this.audio.play()
+      } else {
+        this.audio.pause()
+      }
+    }
+  }
+
   updateVolume = volume => {
     if (typeof volume === 'number' && volume !== this.audio.volume) {
       this.audio.volume = volume
@@ -38,7 +48,7 @@ class Player extends Component {
 
     return (
       <PlayerContext.Consumer>
-        {({ state: { isPlaying, activeTrack }, progressWidth, handleTimeUpdate, handleAudioLoaded, handleNextTrack }) => (
+        {({ state: { activeTrack }, progressWidth, handleTimeUpdate, handleAudioLoaded, handleNextTrack }) => (
           <>
             <audio
               src={activeTrack && activeTrack.source}
@@ -47,7 +57,7 @@ class Player extends Component {
               onEnded={handleNextTrack}
               ref={this.audioRef} />
             <PlayerContainer>
-              <Controls audio={this.audio} />
+              <Controls />
               <Progress width={progressWidth} clickHandler={this.updateAudioTime} />
               <Progress width={volumeWidth} clickHandler={this.updateVolume} />
             </PlayerContainer>
